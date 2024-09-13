@@ -4,9 +4,35 @@ const express = require('express');
 const sql = require('mssql/msnodesqlv8');
 const app = express();
 
+//---------------------------------------------------------
+/*Ruta para Get Obtener las camaroneras */
+//---------------------------------------------------------
+app.get('/obtenercamaronerasxusuario', function(req, respuesta) {
+    let opcion      =   req.query.opcion;
+    let usuario     =   req.query.usuario;
+    let camaronera  =   req.query.camaronera;
+    let anio        =   req.query.anio;
+    let piscina     =   req.query.piscina;
+    let ciclo       =   req.query.ciclo;
+    let query       =   'Sp_Dat_Parametros_Valida_Accesos';
+
+    console.log(opcion)
+    console.log(usuario)
+    console.log(camaronera)
+    console.log(anio)
+    console.log(piscina)
+    console.log(ciclo)
+    console.log(query)
+
+    datosParametrosAccesos(query, opcion,usuario,camaronera,anio,piscina,ciclo).then(datosconsultasp => {
+        respuesta.json(datosconsultasp[0]);
+    })
+    
+
+})
 
 //---------------------------------------------------------
-/*Ruta para Get para devolver los datos de las Guias x Dìa */
+/*Ruta para post para devolver los datos de las Guias x Dìa */
 //---------------------------------------------------------
 app.post('/validarusr', function(req, respuesta) {
     let datos = JSON.stringify(req.body);
@@ -173,6 +199,31 @@ let datosConsultaSP = async(query, datos) => {
         /* console.log(clientes); */
         return datossp.recordsets;
         /* return clientes; */
+    } catch (error) {
+        console.log(error);
+    }
+
+
+}
+
+//---------------------------------------------------------
+/*Conexion al Sp que Realiza las COnsultas */
+//---------------------------------------------------------
+let datosParametrosAccesos = async(query, opcion,usuario,camaronera,anio,piscina,ciclo) => {
+    try {
+        let pool = await sql.connect(config);
+        let datparametros = await pool.request()
+            .input('opcion', sql.Char, opcion)
+            .input('usuario', sql.Char, usuario)
+            .input('camaronera', sql.Char, camaronera)
+            .input('anio', sql.Int, anio)
+            .input('piscina', sql.Char, piscina)
+            .input('ciclo', sql.Char, ciclo)
+            .execute(query);
+
+        return datparametros.recordsets;
+        
+        
     } catch (error) {
         console.log(error);
     }

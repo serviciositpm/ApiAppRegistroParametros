@@ -14,13 +14,13 @@ const swaggerSpec = {
     definition : {
         openapi : "3.0.0",
         info : {
-            title : "Api COntrol Bines ",
-            description:"Permitirò obtener datos de las guìas de remisiòn que se van a pescar el dìa ",
+            title : "Api Registro de Parametros en Camaroneras ",
+            description:"Pewrmitirá obtener y almacenar los datos de las granjas y sus parámetros x día ",
             version : "1.0.0"
         },
         servers: [
             {
-                url : "http://10.20.4.38:8077"
+                url : "http://10.20.4.195:8185"
             }
         ]
     },
@@ -28,8 +28,8 @@ const swaggerSpec = {
 }
 //Middleware
 app.use(bodyParser.json());
-app.use("/api-app-control-time",require('./rutas/consultar_sp'));
-app.use("/api-app-control-time-doc",swaggerUI.serve,swaggerUI.setup(swaggerJsDoc(swaggerSpec)));
+app.use("/api-app-registro-prametros-camaroneras",require('./rutas/consultar_sp'));
+app.use("/api-app-registro-prametros-camaroneras-doc",swaggerUI.serve,swaggerUI.setup(swaggerJsDoc(swaggerSpec)));
 
 
 
@@ -42,6 +42,6 @@ sql.connect(config).then(pool => {
 
 });
 
-let port = process.env.PORT || 8077;
+let port = process.env.PORT || 8185;
 app.listen(port);
 console.log('Aplicacion Corriendo en el Puerto ' + port);
