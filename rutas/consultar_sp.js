@@ -5,6 +5,26 @@ const sql = require('mssql/msnodesqlv8');
 const app = express();
 
 //---------------------------------------------------------
+/*Ruta para Get Obtener las Registros */
+//---------------------------------------------------------
+app.get('/obtenerregistrosparametros', function(req, respuesta) {
+    let opcion      =   req.query.opcion;
+    let usuario     =   req.query.usuario;
+    let camaronera  =   req.query.camaronera;
+    let anio        =   req.query.anio;
+    let piscina     =   req.query.piscina;
+    let ciclo       =   req.query.ciclo;
+    let fecha       =   req.query.fecha;
+    let codform     =   req.query.codform;
+    let query       =   'Sp_Dat_Parametros_Consulta_Registros';
+
+    datosRegistrosParametros(query, opcion,usuario,camaronera,anio,piscina,ciclo,fecha,codform).then(datosconsultasp => {
+        respuesta.json(datosconsultasp[0]);
+    })
+    
+
+})
+//---------------------------------------------------------
 /*Ruta para Get Obtener las camaroneras */
 //---------------------------------------------------------
 app.get('/obtenercamaronerasxusuario', function(req, respuesta) {
@@ -15,14 +35,6 @@ app.get('/obtenercamaronerasxusuario', function(req, respuesta) {
     let piscina     =   req.query.piscina;
     let ciclo       =   req.query.ciclo;
     let query       =   'Sp_Dat_Parametros_Valida_Accesos';
-
-    console.log(opcion)
-    console.log(usuario)
-    console.log(camaronera)
-    console.log(anio)
-    console.log(piscina)
-    console.log(ciclo)
-    console.log(query)
 
     datosParametrosAccesos(query, opcion,usuario,camaronera,anio,piscina,ciclo).then(datosconsultasp => {
         respuesta.json(datosconsultasp[0]);
@@ -219,6 +231,32 @@ let datosParametrosAccesos = async(query, opcion,usuario,camaronera,anio,piscina
             .input('anio', sql.Int, anio)
             .input('piscina', sql.Char, piscina)
             .input('ciclo', sql.Char, ciclo)
+            .execute(query);
+
+        return datparametros.recordsets;
+        
+        
+    } catch (error) {
+        console.log(error);
+    }
+
+
+}
+//---------------------------------------------------------
+/*Conexion al Sp que Realiza las COnsultas */
+//---------------------------------------------------------
+let datosRegistrosParametros = async(query, opcion,usuario,camaronera,anio,piscina,ciclo,fecha,codform) => {
+    try {
+        let pool = await sql.connect(config);
+        let datparametros = await pool.request()
+            .input('opcion', sql.Char, opcion)
+            .input('usuario', sql.Char, usuario)
+            .input('camaronera', sql.Char, camaronera)
+            .input('anio', sql.Int, anio)
+            .input('piscina', sql.Char, piscina)
+            .input('ciclo', sql.Char, ciclo)
+            .input('fecha', sql.Char, fecha)
+            .input('codform', sql.Numeric, codform)
             .execute(query);
 
         return datparametros.recordsets;
