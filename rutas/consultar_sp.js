@@ -5,6 +5,19 @@ const sql = require('mssql/msnodesqlv8');
 const app = express();
 
 //---------------------------------------------------------
+/*Ruta Para Insertar/Actualizar los datos en las tablas  */
+//---------------------------------------------------------
+app.post('/insertaractualizarregistrosparametros', function(req, respuesta) {
+    let datos = JSON.stringify(req.body);
+    let query = 'Sp_Dat_Parametros_Inserta_Actualiza_Registros';
+    datosConsultaSP(query, datos).then(datosconsultasp => {
+        respuesta.json(datosconsultasp[0][0]);
+    })
+    
+
+})
+
+//---------------------------------------------------------
 /*Ruta para Get Obtener las Registros */
 //---------------------------------------------------------
 app.get('/obtenerregistrosparametros', function(req, respuesta) {
