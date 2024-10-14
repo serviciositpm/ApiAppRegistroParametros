@@ -1,4 +1,5 @@
 const config = require('../configuraciones/configuracion_base');
+const logger = require('../utils/logger'); 
 /* const sql = require('mssql'); */
 const express = require('express');
 const sql = require('mssql/msnodesqlv8');
@@ -10,6 +11,8 @@ const app = express();
 app.post('/insertaractualizarregistrosparametros', function(req, respuesta) {
     let datos = JSON.stringify(req.body);
     let query = 'Sp_Dat_Parametros_Inserta_Actualiza_Registros';
+    logger.info(`Datos Recibidos: ${datos}`); 
+    console.log(datos);
     datosConsultaSP(query, datos).then(datosconsultasp => {
         respuesta.json(datosconsultasp[0][0]);
     })
